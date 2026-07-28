@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+/*
+ * Universum Labs design tokens — from the brand book (v1.0, 2026).
+ *
+ * Color:  Void Black is ink, Deep Indigo is surface, Linen White is
+ *         paper, Lumen Lavender is connective tissue (hairlines, dots,
+ *         type accents — never a flood). The Quantum Gradient
+ *         (#6B21E8 → #3B0FCC) is reserved for the mark and singular
+ *         hero moments.
+ * Type:   Instrument Serif for display and the editorial register
+ *         (italics carry the verbs of discovery); Space Grotesk for
+ *         body, UI, and the wordmark (caps, 0.14em tracking).
+ */
+@theme {
+  --color-void: #0a0612;
+  --color-indigo-deep: #14092a;
+  --color-linen: #f4f1eb;
+  --color-lavender: #c7b8f2;
+  --color-quantum-start: #6b21e8;
+  --color-quantum-end: #3b0fcc;
+
+  /* Derived tints used only for text hierarchy on dark surfaces. */
+  --color-linen-70: rgba(244, 241, 235, 0.72);
+  --color-linen-50: rgba(244, 241, 235, 0.52);
+  --color-lavender-30: rgba(199, 184, 242, 0.3);
+  --color-lavender-15: rgba(199, 184, 242, 0.15);
+
+  --font-display: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
+  --font-sans: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+
+  --tracking-wordmark: 0.14em;
+  --tracking-kicker: 0.22em;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-linen);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(107, 33, 232, 0.55);
+  color: var(--color-linen);
+}
+
+/* Visible focus for keyboard navigation — WCAG 2.4.7 */
+:focus-visible {
+  outline: 2px solid var(--color-lavender);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Section kicker — the small tracked-caps label used across the site. */
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-kicker);
+  text-transform: uppercase;
+  color: var(--color-lavender);
+}
+
+/* Hairline rule in Lumen Lavender — connective tissue, never a flood. */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-lavender-30) 20%,
+    var(--color-lavender-30) 80%,
+    transparent
+  );
+}
+
+/* The Quantum Gradient, reserved for singular moments. */
+.quantum-text {
+  background: linear-gradient(100deg, #8b4bf5 0%, #6b21e8 40%, #5b3df0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll-reveal transitions (disabled under reduced motion). */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Elements that animate via inline transition styles snap instantly. */
+  .motion-safe {
+    transition: none !important;
+  }
+}
+
+/* Article typography for WordPress content (sanitized server-side). */
+.prose-insights {
+  color: var(--color-linen-70);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.prose-insights h2,
+.prose-insights h3,
+.prose-insights h4 {
+  font-family: var(--font-display);
+  color: var(--color-linen);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 2.25rem 0 0.875rem;
+}
+
+.prose-insights h2 {
+  font-size: 1.9rem;
+}
+
+.prose-insights h3 {
+  font-size: 1.5rem;
+}
+
+.prose-insights h4 {
+  font-size: 1.25rem;
+}
+
+.prose-insights p,
+.prose-insights ul,
+.prose-insights ol {
+  margin: 1.1rem 0;
+}
+
+.prose-insights ul,
+.prose-insights ol {
+  padding-left: 1.5rem;
+}
+
+.prose-insights ul {
+  list-style: disc;
+}
+
+.prose-insights ol {
+  list-style: decimal;
+}
+
+.prose-insights a {
+  color: var(--color-lavender);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-insights a:hover {
+  color: var(--color-linen);
+}
+
+.prose-insights blockquote {
+  border-left: 2px solid var(--color-lavender-30);
+  padding-left: 1.25rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--color-linen);
+  margin: 1.75rem 0;
+}
+
+.prose-insights img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.75rem 0;
+}
+
+.prose-insights figcaption {
+  font-size: 0.85rem;
+  color: var(--color-linen-50);
+  margin-top: -1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose-insights pre {
+  background: var(--color-indigo-deep);
+  border: 1px solid var(--color-lavender-15);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  margin: 1.5rem 0;
+}
+
+.prose-insights code {
+  font-size: 0.925em;
+}
+
+.prose-insights hr {
+  border: none;
+  border-top: 1px solid var(--color-lavender-15);
+  margin: 2.5rem 0;
+}
