@@ -17,13 +17,20 @@ export const SITE_DESCRIPTION =
 export const CONTACT_EMAIL = "hello@universumlabs.com";
 
 /**
- * Canonical site URL. Set NEXT_PUBLIC_SITE_URL in production;
- * falls back to localhost so local builds always work.
+ * Canonical site URL, resolved in order:
+ *  1. NEXT_PUBLIC_SITE_URL — set this once a real domain exists;
+ *  2. Vercel's production domain (VERCEL_PROJECT_PRODUCTION_URL,
+ *     e.g. universum-labs.vercel.app) so preview deployments have
+ *     correct canonical/OG/sitemap URLs with zero configuration;
+ *  3. localhost, so local builds always work.
+ * Only used in server contexts (metadata, sitemap, structured data).
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
-  /\/$/,
-  "",
-);
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000")
+).replace(/\/$/, "");
 
 /**
  * The Universum Labs application (login → dashboard → graph) lives in a
