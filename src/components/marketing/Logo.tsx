@@ -65,7 +65,7 @@ export function UniversumLogo({
     <span className={`inline-flex items-center gap-3 ${className ?? ""}`}>
       <UniversumMark className="h-8 w-auto shrink-0" />
       <span
-        className={`font-sans font-medium uppercase leading-[1.05] tracking-[0.14em] text-linen ${
+        className={`font-wordmark font-medium uppercase leading-[1.05] tracking-[0.14em] text-linen ${
           stacked ? "flex flex-col text-sm" : "text-sm"
         }`}
       >

@@ -81,8 +81,9 @@ docs/                  Setup guides (WordPress, email, Beehiiv)
 Design tokens come from the Universum Labs brand book (v1.0, 2026): Void Black
 `#0A0612`, Deep Indigo `#14092A`, Linen White `#F4F1EB`, Lumen Lavender `#C7B8F2`,
 and the Quantum Gradient `#6B21E8 → #3B0FCC` (reserved for the mark and singular
-hero moments). Typography is Instrument Serif (display) and Space Grotesk
-(body/UI/wordmark), both self-hosted from `src/fonts`.
+hero moments). Typography is Poppins (headings/display) and Roboto (body/UI),
+with Space Grotesk retained solely for the wordmark lockup; all three are
+self-hosted from `src/fonts`.
 
 ## The platform application
 

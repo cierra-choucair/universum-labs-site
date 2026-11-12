@@ -10,23 +10,37 @@ import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } fr
 import "./globals.css";
 
 /**
- * Brand typefaces, self-hosted (no third-party font requests):
- * Space Grotesk (variable 300–700) for body/UI, Instrument Serif for
- * the display register.
+ * Site typefaces, self-hosted (no third-party font requests):
+ * Poppins for headings, Roboto (variable) for body/UI, and
+ * Space Grotesk kept solely for the wordmark lockup, per the brand
+ * book's fixed logo treatment.
  */
+const poppins = localFont({
+  src: [
+    { path: "../fonts/poppins-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/poppins-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/poppins-600.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/poppins-400-italic.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/poppins-500-italic.woff2", weight: "500", style: "italic" },
+    { path: "../fonts/poppins-600-italic.woff2", weight: "600", style: "italic" },
+  ],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const roboto = localFont({
+  src: [
+    { path: "../fonts/roboto-variable.woff2", weight: "100 900", style: "normal" },
+    { path: "../fonts/roboto-italic-variable.woff2", weight: "100 900", style: "italic" },
+  ],
+  variable: "--font-roboto",
+  display: "swap",
+});
+
 const spaceGrotesk = localFont({
   src: "../fonts/space-grotesk-variable.woff2",
   weight: "300 700",
   variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const instrumentSerif = localFont({
-  src: [
-    { path: "../fonts/instrument-serif.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/instrument-serif-italic.woff2", weight: "400", style: "italic" },
-  ],
-  variable: "--font-instrument-serif",
   display: "swap",
 });
 
@@ -69,7 +83,7 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${instrumentSerif.variable}`}>
+    <html lang="en" className={`${poppins.variable} ${roboto.variable} ${spaceGrotesk.variable}`}>
       <body>
         {/* Scroll-reveal styling must never hide content when JS is off. */}
         <noscript>

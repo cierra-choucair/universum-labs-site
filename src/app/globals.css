@@ -8,9 +8,9 @@
  *         type accents — never a flood). The Quantum Gradient
  *         (#6B21E8 → #3B0FCC) is reserved for the mark and singular
  *         hero moments.
- * Type:   Instrument Serif for display and the editorial register
- *         (italics carry the verbs of discovery); Space Grotesk for
- *         body, UI, and the wordmark (caps, 0.14em tracking).
+ * Type:   Poppins for headings and the display register; Roboto for
+ *         body, UI, and forms. Space Grotesk remains solely for the
+ *         wordmark lockup (caps, 0.14em tracking, per the brand book).
  */
 @theme {
   --color-void: #0a0612;
@@ -26,8 +26,9 @@
   --color-lavender-30: rgba(199, 184, 242, 0.3);
   --color-lavender-15: rgba(199, 184, 242, 0.15);
 
-  --font-display: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
-  --font-sans: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  --font-display: var(--font-poppins), "Poppins", system-ui, sans-serif;
+  --font-sans: var(--font-roboto), "Roboto", system-ui, sans-serif;
+  --font-wordmark: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
 
   --tracking-wordmark: 0.14em;
   --tracking-kicker: 0.22em;
@@ -35,6 +36,24 @@
 
 :root {
   color-scheme: dark;
+}
+
+/*
+ * Headings and display-register text are Poppins at semibold.
+ * In @layer base so weight utilities (font-medium etc.) still win.
+ */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
 }
 
 html {
@@ -69,6 +88,7 @@ body {
 
 /* Section kicker — the small tracked-caps label used across the site. */
 .kicker {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: var(--tracking-kicker);
@@ -135,7 +155,7 @@ body {
 .prose-insights h4 {
   font-family: var(--font-display);
   color: var(--color-linen);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.2;
   margin: 2.25rem 0 0.875rem;
 }
