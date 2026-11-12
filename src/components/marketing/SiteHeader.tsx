@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { UniversumLogo } from "@/components/marketing/Logo";
 import { LOGIN_URL, NAV_ITEMS } from "@/lib/site";
 
 /**
@@ -59,7 +59,15 @@ export function SiteHeader() {
           aria-label="Universum Labs — home"
           onClick={() => setOpen(false)}
         >
-          <UniversumLogo />
+          {/* Supplied lockup artwork; wordmark set in Linen for dark surfaces. */}
+          <Image
+            src="/brand/universum-logo-horizontal-light.png"
+            alt=""
+            width={712}
+            height={171}
+            priority
+            className="h-9 w-auto"
+          />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
