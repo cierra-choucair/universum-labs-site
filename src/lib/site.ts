@@ -13,8 +13,12 @@ export const SITE_TAGLINE = "A digital Alexandria for scientific knowledge";
 export const SITE_DESCRIPTION =
   "Universum Labs is creating the intelligence layer for emerging technology — connecting research, evidence, data, models, tools, use cases, and institutions into systems people can navigate and act upon.";
 
-/** Verified public contact address (from the Universum Labs brand book). */
-export const CONTACT_EMAIL = "hello@universumlabs.com";
+/**
+ * Public contact address, shown in the footer, on the contact page,
+ * and in form-failure messages. Override with NEXT_PUBLIC_CONTACT_EMAIL
+ * until the brand-book address (hello@) exists as a real mailbox.
+ */
+export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@universumlabs.com";
 
 /**
  * Canonical site URL, resolved in order:
