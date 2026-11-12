@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
-import { UniversumLogo } from "@/components/marketing/Logo";
 import { CONTACT_EMAIL, LOGIN_URL, NAV_ITEMS } from "@/lib/site";
 
 export function SiteFooter() {
@@ -12,7 +12,13 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
           <div>
-            <UniversumLogo stacked />
+            <Image
+              src="/brand/universum-logo-horizontal-light.png"
+              alt="Universum Labs"
+              width={712}
+              height={171}
+              className="h-10 w-auto"
+            />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-linen-70">
               A living map of scientific knowledge — connecting research, evidence, tools, and
               institutions so people can explore, understand, and act on what humanity knows.
