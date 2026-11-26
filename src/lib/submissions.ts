@@ -41,15 +41,19 @@ function cleanEnv(value: string | undefined): string {
     .trim();
 }
 
+/** Browsers hide "https://", so URLs copied from the address bar may lack it. */
+function webhookUrl(): string {
+  const url = cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_URL);
+  if (!url || /^https?:\/\//i.test(url)) return url;
+  return `https://${url.replace(/^\/+/, "")}`;
+}
+
 export function isSheetsConfigured(): boolean {
-  return Boolean(
-    cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_URL) &&
-    cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_SECRET),
-  );
+  return Boolean(webhookUrl() && cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_SECRET));
 }
 
 export async function sendToGoogleSheets(submission: Submission): Promise<boolean> {
-  const url = cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_URL);
+  const url = webhookUrl();
   const secret = cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_SECRET);
   if (!url || !secret) return false;
 
