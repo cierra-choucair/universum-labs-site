@@ -71,6 +71,26 @@ so you don't set anything up in the sheet yourself.
 | "Your application could not be sent right now" | The secrets don't match, or the deployment isn't set to _Anyone_. Vercel's function logs (Logs tab) give the exact reason. |
 | Row appears but no email arrives               | `authorize` was never run, or Google's daily email quota is used up (100/day on personal accounts, 1,500 on Workspace).    |
 
+### Finding the exact reason for "could not be sent"
+
+In Vercel, open the project's **Logs** tab and search for `Google Sheets`.
+Submit the form again if nothing appears. Then match the message:
+
+| Log message contains                      | Fix                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rejected the submission: unauthorized`   | The passwords differ. Copy the value between the quotes on the script's `SHARED_SECRET` line, then delete and re-add `GOOGLE_SHEETS_WEBHOOK_SECRET` in Vercel and redeploy. If they already match, the live deployment has an older copy of the script: publish a new version (below). |
+| `rejected the submission: secret_not_set` | The live deployment still has the placeholder. Set the password, **Save**, then publish a new version (below).                                                                                                                                                                         |
+| `rejected the submission: server_error`   | The script itself failed. In Apps Script, open **Executions** (clock icon, left sidebar) to see the error. Usually it means `authorize` was never run.                                                                                                                                 |
+| `non-JSON response`                       | Google answered with a sign-in or error page. Check the deployment uses **Execute as: Me** and **Who has access: Anyone** (not "Anyone with Google account"), and that the URL ends in `/exec`.                                                                                        |
+| `returned HTTP` or `unreachable`          | The URL in `GOOGLE_SHEETS_WEBHOOK_URL` is wrong or incomplete. Copy it again from **Deploy → Manage deployments**.                                                                                                                                                                     |
+
+To check the deployment without the website, open the `/exec` URL in a
+**private/incognito** window (so you aren't signed in to Google). It
+should say _"Universum Labs form receiver is running."_
+
+**Deployments are snapshots.** Editing the script, even just the
+password, changes nothing live until you publish a new version.
+
 **If you edit the script later**, choose **Deploy → Manage deployments →
 ✏️ Edit → Version: New version → Deploy**. That keeps the same URL, so
 Vercel needs no change. Choosing **New deployment** instead creates a new

@@ -32,7 +32,13 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
 
-    if (SHARED_SECRET === "PASTE-YOUR-SECRET-HERE" || data.secret !== SHARED_SECRET) {
+    const expected = String(SHARED_SECRET).trim();
+    if (!expected || expected === "PASTE-YOUR-SECRET-HERE") {
+      // The deployed version still has the placeholder: set the secret,
+      // save, then Deploy → Manage deployments → Edit → New version.
+      return respond({ ok: false, error: "secret_not_set" });
+    }
+    if (String(data.secret || "").trim() !== expected) {
       return respond({ ok: false, error: "unauthorized" });
     }
 

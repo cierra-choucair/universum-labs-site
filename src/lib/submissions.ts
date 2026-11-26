@@ -29,13 +29,28 @@ export type DeliveryResult = { ok: true } | { ok: false; reason: "not_configured
 
 const SHEETS_TIMEOUT_MS = 15_000;
 
+/**
+ * Values pasted into a hosting dashboard often pick up surrounding
+ * whitespace or the quote marks from the script line they were copied
+ * from; either makes the shared secret silently mismatch.
+ */
+function cleanEnv(value: string | undefined): string {
+  return (value ?? "")
+    .trim()
+    .replace(/^(["'])(.*)\1$/, "$2")
+    .trim();
+}
+
 export function isSheetsConfigured(): boolean {
-  return Boolean(process.env.GOOGLE_SHEETS_WEBHOOK_URL && process.env.GOOGLE_SHEETS_WEBHOOK_SECRET);
+  return Boolean(
+    cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_URL) &&
+    cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_SECRET),
+  );
 }
 
 export async function sendToGoogleSheets(submission: Submission): Promise<boolean> {
-  const url = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
-  const secret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET;
+  const url = cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_URL);
+  const secret = cleanEnv(process.env.GOOGLE_SHEETS_WEBHOOK_SECRET);
   if (!url || !secret) return false;
 
   try {

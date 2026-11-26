@@ -89,6 +89,18 @@ describe("sendToGoogleSheets", () => {
     await expect(sendToGoogleSheets(SUBMISSION)).resolves.toBe(false);
   });
 
+  it("strips quotes and whitespace pasted around the secret and URL", async () => {
+    vi.stubEnv("GOOGLE_SHEETS_WEBHOOK_URL", "  https://script.google.com/macros/s/TEST/exec\n");
+    vi.stubEnv("GOOGLE_SHEETS_WEBHOOK_SECRET", ' "s3cret" ');
+    const fetchSpy = vi.fn(async () => jsonResponse({ ok: true }));
+    vi.stubGlobal("fetch", fetchSpy);
+
+    await expect(sendToGoogleSheets(SUBMISSION)).resolves.toBe(true);
+    const [url, init] = fetchSpy.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://script.google.com/macros/s/TEST/exec");
+    expect(JSON.parse(String(init.body)).secret).toBe("s3cret");
+  });
+
   it("requires both the URL and the secret", () => {
     vi.stubEnv("GOOGLE_SHEETS_WEBHOOK_SECRET", "");
     expect(isSheetsConfigured()).toBe(false);
