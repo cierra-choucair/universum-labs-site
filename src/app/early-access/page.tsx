@@ -49,7 +49,7 @@ export default function EarlyAccessPage() {
               </li>
             </ul>
           </header>
-          <div className="rounded-3xl border border-lavender-15 bg-indigo-deep/40 p-7 sm:p-10">
+          <div className="rounded-3xl border border-lavender-15 bg-indigo-deep/40 p-7 sm:p-10 lg:self-start">
             <EarlyAccessForm />
           </div>
         </div>

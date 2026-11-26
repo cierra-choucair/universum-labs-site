@@ -2,6 +2,11 @@
 
 ## Inquiry email (contact + pilot forms)
 
+> **Simpler option:** the forms can save to a Google Sheet and email
+> you on each submission, with no domain verification required. See
+> [BETA_SIGNUPS_SETUP.md](BETA_SIGNUPS_SETUP.md). SMTP (below) is optional
+> and can run alongside it.
+
 `/contact` and `/early-access` submit to server-side API routes that deliver
 email over SMTP (`src/lib/email.ts`, via nodemailer). Until SMTP is configured,
 both forms tell the visitor honestly that delivery is not yet connected and

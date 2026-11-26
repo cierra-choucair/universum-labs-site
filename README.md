@@ -36,21 +36,22 @@ npm run dev                  # http://localhost:3000
 | `/contact`          | Partnership & contact form                                                                                                           |
 | `/early-access`     | Pilot / early-access application                                                                                                     |
 | `/login`            | Redirects to the platform login once `NEXT_PUBLIC_APP_LOGIN_URL` (or `NEXT_PUBLIC_APP_URL`) is set; explains early access until then |
-| `/api/contact`      | Contact form endpoint (SMTP delivery)                                                                                                |
-| `/api/early-access` | Pilot application endpoint (SMTP delivery)                                                                                           |
+| `/api/contact`      | Contact form endpoint (Google Sheet and/or SMTP)                                                                                     |
+| `/api/early-access` | Pilot application endpoint (Google Sheet and/or SMTP)                                                                                |
 | `/api/newsletter`   | Newsletter endpoint (Beehiiv v2 API, server-side only)                                                                               |
 
 ## Environment variables
 
 See [`.env.example`](.env.example) for the full annotated list.
 
-| Variable                                                                                           | Required for                                                               |
-| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`                                                                             | Canonical URLs, sitemap, OG metadata                                       |
-| `NEXT_PUBLIC_APP_URL` / `NEXT_PUBLIC_APP_LOGIN_URL`                                                | Linking "Log In" to the deployed platform                                  |
-| `INQUIRY_TO_EMAIL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Contact + pilot form delivery ([docs](docs/EMAIL_AND_NEWSLETTER_SETUP.md)) |
-| `BEEHIIV_API_KEY`, `BEEHIIV_PUBLICATION_ID`                                                        | Newsletter signup ([docs](docs/EMAIL_AND_NEWSLETTER_SETUP.md))             |
-| `WORDPRESS_API_URL`                                                                                | Insights content ([docs](docs/WORDPRESS_SETUP.md))                         |
+| Variable                                                                                           | Required for                                                                                              |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                                                                             | Canonical URLs, sitemap, OG metadata                                                                      |
+| `NEXT_PUBLIC_APP_URL` / `NEXT_PUBLIC_APP_LOGIN_URL`                                                | Linking "Log In" to the deployed platform                                                                 |
+| `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET`                                        | **Recommended** form delivery: rows in a Google Sheet + email alerts ([docs](docs/BETA_SIGNUPS_SETUP.md)) |
+| `INQUIRY_TO_EMAIL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Optional SMTP form delivery ([docs](docs/EMAIL_AND_NEWSLETTER_SETUP.md))                                  |
+| `BEEHIIV_API_KEY`, `BEEHIIV_PUBLICATION_ID`                                                        | Newsletter signup ([docs](docs/EMAIL_AND_NEWSLETTER_SETUP.md))                                            |
+| `WORDPRESS_API_URL`                                                                                | Insights content ([docs](docs/WORDPRESS_SETUP.md))                                                        |
 
 Every integration is optional at build time: without credentials the forms report
 honestly that they are not yet connected, and Insights shows its "coming soon" state.
@@ -73,7 +74,7 @@ public/team/           Drop team headshots here as <name>.jpg|png|webp
                        (cierra, sandro, autumn) — the team section picks
                        them up automatically; until then it renders
                        constellation monograms.
-docs/                  Setup guides (WordPress, email, Beehiiv)
+docs/                  Setup guides (beta signups sheet, WordPress, email, Beehiiv)
 ```
 
 ## Brand

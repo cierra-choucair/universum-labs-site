@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { formatEmailBody, sendInquiryEmail } from "@/lib/email";
 import { clientKeyFromHeaders, rateLimit } from "@/lib/rate-limit";
-import { earlyAccessSchema, fieldErrors } from "@/lib/validation";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { deliverSubmission } from "@/lib/submissions";
+import { earlyAccessSchema, fieldErrors } from "@/lib/validation";
+
+// Headroom for a cold-started Google Apps Script receiver.
+export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
   const { allowed } = rateLimit({
@@ -42,10 +45,11 @@ export async function POST(request: NextRequest) {
   }
 
   const d = parsed.data;
-  const result = await sendInquiryEmail({
+  const result = await deliverSubmission({
+    form: "early-access",
     subject: `[Universum Labs] Pilot application — ${d.name} (${d.audienceType})`,
     replyTo: d.email,
-    text: formatEmailBody([
+    fields: [
       ["Name", d.name],
       ["Email", d.email],
       ["Organization / affiliation", d.organization],
@@ -53,13 +57,13 @@ export async function POST(request: NextRequest) {
       ["Intended use", d.intendedUse],
       ["Hopes to explore or evaluate", d.interests],
       ["Willing to provide feedback", d.feedbackWillingness ? "Yes" : "No"],
-    ]),
+    ],
   });
 
   if (!result.ok) {
     const message =
       result.reason === "not_configured"
-        ? `Applications are not yet connected to an email service. Please email us directly at ${CONTACT_EMAIL}.`
+        ? `Online applications are not yet connected. Please email us directly at ${CONTACT_EMAIL}.`
         : `Your application could not be sent right now. Please try again, or email us directly at ${CONTACT_EMAIL}.`;
     return NextResponse.json({ ok: false, error: message }, { status: 503 });
   }

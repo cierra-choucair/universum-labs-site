@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useId } from "react";
+import { ReactNode, useEffect, useId, useRef } from "react";
 
 /**
  * Accessible form primitives shared by every site form: explicit
@@ -206,6 +206,35 @@ export function HoneypotField() {
   );
 }
 
+/**
+ * The success message replaces a much taller form, so the visitor
+ * would otherwise be left scrolled past it. Move them to it and focus
+ * it so assistive technology announces the confirmation.
+ */
+function SuccessMessage({ title, body }: { title: string; body: string }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    node.focus({ preventScroll: true });
+    node.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      role="status"
+      tabIndex={-1}
+      className="rounded-lg border border-lavender-30 bg-indigo-deep/70 p-5 text-linen focus:outline-none"
+    >
+      <p className="font-display text-xl">{title}</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-linen-70">{body}</p>
+    </div>
+  );
+}
+
 export function FormStatus({
   phase,
   error,
@@ -218,15 +247,7 @@ export function FormStatus({
   successBody: string;
 }) {
   if (phase === "success") {
-    return (
-      <div
-        role="status"
-        className="rounded-lg border border-lavender-30 bg-indigo-deep/70 p-5 text-linen"
-      >
-        <p className="font-display text-xl">{successTitle}</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-linen-70">{successBody}</p>
-      </div>
-    );
+    return <SuccessMessage title={successTitle} body={successBody} />;
   }
   if (phase === "error" && error) {
     return (

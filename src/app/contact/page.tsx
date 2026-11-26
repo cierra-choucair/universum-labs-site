@@ -37,7 +37,7 @@ export default function ContactPage() {
               .
             </p>
           </header>
-          <div className="rounded-3xl border border-lavender-15 bg-indigo-deep/40 p-7 sm:p-10">
+          <div className="rounded-3xl border border-lavender-15 bg-indigo-deep/40 p-7 sm:p-10 lg:self-start">
             <ContactForm />
           </div>
         </div>

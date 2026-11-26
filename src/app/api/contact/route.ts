@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { formatEmailBody, sendInquiryEmail } from "@/lib/email";
 import { clientKeyFromHeaders, rateLimit } from "@/lib/rate-limit";
-import { contactSchema, fieldErrors } from "@/lib/validation";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { deliverSubmission } from "@/lib/submissions";
+import { contactSchema, fieldErrors } from "@/lib/validation";
+
+// Headroom for a cold-started Google Apps Script receiver.
+export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
   const { allowed } = rateLimit({
@@ -38,29 +41,30 @@ export async function POST(request: NextRequest) {
   }
 
   // Honeypot filled → almost certainly a bot. Drop silently with a 200
-  // so automated scripts learn nothing; no email is sent.
+  // so automated scripts learn nothing; nothing is delivered.
   if (parsed.data.website && parsed.data.website.length > 0) {
     return NextResponse.json({ ok: true });
   }
 
   const d = parsed.data;
-  const result = await sendInquiryEmail({
+  const result = await deliverSubmission({
+    form: "contact",
     subject: `[Universum Labs] ${d.inquiryType} inquiry — ${d.name}`,
     replyTo: d.email,
-    text: formatEmailBody([
+    fields: [
       ["Name", d.name],
       ["Email", d.email],
       ["Organization", d.organization],
       ["Role", d.role],
       ["Type of inquiry", d.inquiryType],
       ["Message", d.message],
-    ]),
+    ],
   });
 
   if (!result.ok) {
     const message =
       result.reason === "not_configured"
-        ? `The contact form is not yet connected to an email service. Please email us directly at ${CONTACT_EMAIL}.`
+        ? `The contact form is not yet connected. Please email us directly at ${CONTACT_EMAIL}.`
         : `Your message could not be sent right now. Please try again, or email us directly at ${CONTACT_EMAIL}.`;
     return NextResponse.json({ ok: false, error: message }, { status: 503 });
   }
