@@ -66,7 +66,9 @@ function doPost(e) {
     return respond({ ok: true });
   } catch (err) {
     console.error(err);
-    return respond({ ok: false, error: "server_error" });
+    // Only reachable after the secret check, so the detail goes solely
+    // to the website's server logs, where it names the actual problem.
+    return respond({ ok: false, error: "server_error", detail: String(err) });
   }
 }
 
@@ -77,20 +79,37 @@ function doGet() {
 
 /**
  * Run this once from the editor (choose "authorize" in the function menu,
- * then ▶ Run). It grants the script permission to use this sheet and send
- * email, and sends you a test message.
+ * then ▶ Run). It grants the script permission to use the spreadsheet and
+ * send email, and emails you a link to the spreadsheet it will use.
  */
 function authorize() {
   MailApp.sendEmail(
     recipient(),
     "Universum Labs form receiver is connected",
-    "Website submissions will be saved to this spreadsheet:\n" +
-      SpreadsheetApp.getActiveSpreadsheet().getUrl(),
+    "Website submissions will be saved to this spreadsheet:\n" + getSpreadsheet().getUrl(),
   );
 }
 
+/**
+ * The spreadsheet this script is attached to. A script created on its own
+ * at script.google.com has none, so it creates one ("Universum Labs —
+ * Website submissions" in your Google Drive) and reuses it from then on.
+ */
+function getSpreadsheet() {
+  const attached = SpreadsheetApp.getActiveSpreadsheet();
+  if (attached) return attached;
+
+  const properties = PropertiesService.getScriptProperties();
+  const savedId = properties.getProperty("SPREADSHEET_ID");
+  if (savedId) return SpreadsheetApp.openById(savedId);
+
+  const created = SpreadsheetApp.create("Universum Labs — Website submissions");
+  properties.setProperty("SPREADSHEET_ID", created.getId());
+  return created;
+}
+
 function appendSubmission(sheetName, submittedAt, fields) {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const spreadsheet = getSpreadsheet();
   const sheet = spreadsheet.getSheetByName(sheetName) || spreadsheet.insertSheet(sheetName);
 
   // Header row: "Submitted at" plus one column per field label. New
@@ -128,7 +147,7 @@ function notify(data, sheetName) {
     '\n\n—\nSaved to the "' +
     sheetName +
     '" tab:\n' +
-    SpreadsheetApp.getActiveSpreadsheet().getUrl();
+    getSpreadsheet().getUrl();
 
   const options = data.replyTo ? { replyTo: String(data.replyTo) } : {};
   MailApp.sendEmail(recipient(), String(data.subject || "New website submission"), body, options);

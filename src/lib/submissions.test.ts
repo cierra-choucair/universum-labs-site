@@ -65,6 +65,25 @@ describe("sendToGoogleSheets", () => {
     await expect(sendToGoogleSheets(SUBMISSION)).resolves.toBe(false);
   });
 
+  it("logs the script's error detail so the logs name the actual problem", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        jsonResponse({
+          ok: false,
+          error: "server_error",
+          detail: "Exception: You do not have permission to call SpreadsheetApp.openById",
+        }),
+      ),
+    );
+    await expect(sendToGoogleSheets(SUBMISSION)).resolves.toBe(false);
+    expect(errorSpy).toHaveBeenCalledWith(
+      "Google Sheets receiver rejected the submission: server_error (Exception: You do not have permission to call SpreadsheetApp.openById)",
+    );
+    errorSpy.mockRestore();
+  });
+
   it("fails on a non-JSON page (misconfigured or crashed deployment)", async () => {
     vi.stubGlobal(
       "fetch",

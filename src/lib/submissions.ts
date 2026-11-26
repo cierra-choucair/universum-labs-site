@@ -84,7 +84,7 @@ export async function sendToGoogleSheets(submission: Submission): Promise<boolea
     // A misconfigured or crashed script returns an HTML page with HTTP
     // 200, so success requires the script's own { ok: true } reply.
     const text = await res.text();
-    let data: { ok?: unknown; error?: unknown } | null = null;
+    let data: { ok?: unknown; error?: unknown; detail?: unknown } | null = null;
     try {
       data = JSON.parse(text);
     } catch {
@@ -92,7 +92,10 @@ export async function sendToGoogleSheets(submission: Submission): Promise<boolea
       return false;
     }
     if (data?.ok === true) return true;
-    console.error(`Google Sheets receiver rejected the submission: ${String(data?.error)}`);
+    const detail = data?.detail ? ` (${String(data.detail)})` : "";
+    console.error(
+      `Google Sheets receiver rejected the submission: ${String(data?.error)}${detail}`,
+    );
     return false;
   } catch (error) {
     console.error("Google Sheets receiver unreachable:", error);
